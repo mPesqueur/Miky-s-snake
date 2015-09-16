@@ -4,8 +4,9 @@ import time
 
 
 class Snake:
-    def __init__(self, canvas, couleur):
+    def __init__(self, canvas, food, couleur):
         self.canvas = canvas
+        self.food = food
         self.id = canvas.create_rectangle(10, 10, 20, 20, fill=couleur)
         self.canvas.move(self.id, 250, 250)
         self.x=0
@@ -57,9 +58,8 @@ class Snake:
             self.canvas.create_text(250, 250, text='GAME OVER')
         
 class Food:
-    def __init__(self, canvas, snake, couleur):
+    def __init__(self, canvas, couleur):
         self.canvas = canvas
-        self.snake = snake
         self.id = canvas.create_oval(5, 5, 12.5, 12.5, fill=couleur)
         self.canvas.move(self.id, 200,100)
         self.x=0
@@ -78,8 +78,9 @@ canvas = Canvas(tk, width=500, height=500, bd=0, highlightthickness=0)
 canvas.pack()
 tk.update()
 
-snake = Snake(canvas, 'red')
-food = Food(canvas, snake, 'purple')
+
+food = Food(canvas, 'purple')
+snake = Snake(canvas, food,'red')
 
 
 while 1:
