@@ -2,11 +2,9 @@ from tkinter import *
 import random
 import time
 
-
 class Snake:
-    def __init__(self, canvas, food, couleur):
+    def __init__(self, canvas, couleur):
         self.canvas = canvas
-        self.food = food
         self.id = canvas.create_rectangle(10, 10, 20, 20, fill=couleur)
         self.canvas.move(self.id, 250, 250)
         self.x=0
@@ -17,6 +15,7 @@ class Snake:
         self.canvas.bind_all('<KeyPress-Down>', self.down_move)
         self.canvas_width = self.canvas.winfo_width()
         self.canvas_height=self.canvas.winfo_height()
+        
 
     def right_move(self, evt):
         self.x = 0.5
@@ -52,24 +51,41 @@ class Snake:
             self.y=0
             self.canvas.create_text(250, 250, text='GAME OVER')##en attente d'un vrai endgame##
 
-    def eat_food(self, pos):
-        pos_food = self.canvas.coords(self.food.id)
-        if (pos[0] and pos[1]) == (pos_food[0] and pos_food[1]):
-            self.canvas.create_text(250, 250, text='GAME OVER')
-        
+
+
+
 class Food:
-    def __init__(self, canvas, couleur):
+    def __init__(self, canvas, snake, couleur):
         self.canvas = canvas
-        self.id = canvas.create_oval(5, 5, 12.5, 12.5, fill=couleur)
-        self.canvas.move(self.id, 200,100)
-        self.x=0
-        self.y=0
+        self.snake = snake
+        self.canvas_width = self.canvas.winfo_width()
+        self.canvas_height=self.canvas.winfo_height()
+        self.x=random.randint(0, self.canvas_width)
+        self.y=random.randint(0, self.canvas_height)
+        self.r = 5
+        self.id = canvas.create_oval(self.x-self.r, self.y-self.r, self.x+self.r, self.y+self.r, fill=couleur)
+        self.OvalsList = []
 
     def drawing_food(self):
-        self.canvas.move(self.id, self.x, self.y)
+        self.canvas.move(self.id, 0, 0)
         pos = self.canvas.coords(self.id)
-        
 
+        
+    def eat_food(self):
+        pos = self.canvas.coords( self.id )
+        pos_snake = self.canvas.coords(self.snake.id)
+        if ( abs(pos[0] - pos_snake[0]) <= 5  and abs(pos[1] - pos_snake[1] ) <= 5):
+            self.OvalsList.append(self.id)
+            print (self.OvalsList)
+            while self.OvalsList !=[]:
+                self.id = self.OvalsList[-1]
+                self.drawing_food()
+                del self.OvalsList[-1]
+                print (self.OvalsList)
+                
+            
+        
+            
 tk = Tk()
 tk.title("Miky's snake")
 tk.resizable(0, 0)
@@ -79,13 +95,15 @@ canvas.pack()
 tk.update()
 
 
-food = Food(canvas, 'purple')
-snake = Snake(canvas, food,'red')
+snake = Snake(canvas,'red')
+food = Food(canvas, snake,  'purple')
 
 
 while 1:
     snake.drawing_snake()
     food.drawing_food()
+    food.eat_food()
+    
     tk.update_idletasks()
     tk.update()
     time.sleep(0.01)
