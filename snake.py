@@ -81,11 +81,10 @@ class Food:
 
         if ((self.x_milieu_pos == self.x_milieu_pos_snake) and (self.y_milieu_pos == self.y_milieu_pos_snake)):
             self.canvas.create_text(250, 250, text='touche')
-            self.canvas_width = self.canvas.winfo_width()
-            self.canvas_height=self.canvas.winfo_height()
             self.x=random.randint(0, self.canvas_width)
             self.y=random.randint(0, self.canvas_height)
             self.r = 5
+            self.canvas.delete(self.id)
             self.id = canvas.create_oval(self.x-self.r, self.y-self.r, self.x+self.r, self.y+self.r, fill='purple')
             
         
