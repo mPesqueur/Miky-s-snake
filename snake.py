@@ -2,6 +2,7 @@ from tkinter import *
 import random
 import time
 
+
 class Snake:
     def __init__(self, canvas, couleur):
         self.canvas = canvas
@@ -52,10 +53,8 @@ class Snake:
             self.canvas.create_text(250, 250, text='GAME OVER')##en attente d'un vrai endgame##
 
 
-
-
 class Food:
-    def __init__(self, canvas, snake, couleur):
+    def __init__(self, canvas, snake,  couleur):
         self.canvas = canvas
         self.snake = snake
         self.canvas_width = self.canvas.winfo_width()
@@ -64,7 +63,6 @@ class Food:
         self.y=random.randint(0, self.canvas_height)
         self.r = 5
         self.id = canvas.create_oval(self.x-self.r, self.y-self.r, self.x+self.r, self.y+self.r, fill=couleur)
-        self.OvalsList = []
 
     def drawing_food(self):
         self.canvas.move(self.id, 0, 0)
@@ -74,20 +72,35 @@ class Food:
     def eat_food(self):
         pos = self.canvas.coords( self.id )
         pos_snake = self.canvas.coords(self.snake.id)
-        self.x_milieu_pos = abs((pos[0]+pos[2])/2)
-        self.y_milieu_pos = abs((pos[1] + pos[3])/2)
-        self.x_milieu_pos_snake = abs((pos_snake[0]+pos_snake[2])/2)
-        self.y_milieu_pos_snake = abs((pos_snake[1] + pos_snake[3])/2)
 
-        if ((self.x_milieu_pos == self.x_milieu_pos_snake) and (self.y_milieu_pos == self.y_milieu_pos_snake)):
-            self.canvas.create_text(250, 250, text='touche')
+        if (( abs(pos[0] - pos_snake[0]) <= 5  and abs(pos[1] - pos_snake[1] ) <= 5)):
+            #self.canvas.create_text(250, 250, text='touche')
             self.x=random.randint(0, self.canvas_width)
             self.y=random.randint(0, self.canvas_height)
             self.r = 5
             self.canvas.delete(self.id)
             self.id = canvas.create_oval(self.x-self.r, self.y-self.r, self.x+self.r, self.y+self.r, fill='purple')
-            
+
+
+
+class Score:
+    def __init__(self, canvas, snake, food):
+        self.canvas = canvas
+        self.snake = snake
+        self.food = food
+        self.score = 0
+        self.id=self.canvas.create_text(40, 20, text='Your score: %s' % self.score)
         
+    def score_update(self):
+        pos_snake = self.canvas.coords(self.snake.id)
+        pos_food = self.canvas.coords(self.food.id)
+
+        if (( abs(pos_food[0] - pos_snake[0]) <= 5  and abs(pos_food[1] - pos_snake[1] ) <= 5)):
+            self.canvas.delete(self.id)
+            self.score =self.score + 1
+            self.id=self.canvas.create_text(40, 20, text='Your score: %s' % self.score)
+
+
 tk = Tk()
 tk.title("Miky's snake")
 tk.resizable(0, 0)
@@ -99,11 +112,13 @@ tk.update()
 
 snake = Snake(canvas,'red')
 food = Food(canvas, snake,  'purple')
+score = Score(canvas, snake, food)
 
 
 while 1:
     snake.drawing_snake()
     food.drawing_food()
+    score.score_update()
     food.eat_food()
     
     tk.update_idletasks()
