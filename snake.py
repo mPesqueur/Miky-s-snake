@@ -74,18 +74,21 @@ class Food:
     def eat_food(self):
         pos = self.canvas.coords( self.id )
         pos_snake = self.canvas.coords(self.snake.id)
-        if ( abs(pos[0] - pos_snake[0]) <= 5  and abs(pos[1] - pos_snake[1] ) <= 5):
-            self.OvalsList.append(self.id)
-            print (self.OvalsList)
-            while self.OvalsList !=[]:
-                self.id = self.OvalsList[-1]
-                self.drawing_food()
-                del self.OvalsList[-1]
-                print (self.OvalsList)
-                
+        self.x_milieu_pos = abs((pos[0]+pos[2])/2)
+        self.y_milieu_pos = abs((pos[1] + pos[3])/2)
+        self.x_milieu_pos_snake = abs((pos_snake[0]+pos_snake[2])/2)
+        self.y_milieu_pos_snake = abs((pos_snake[1] + pos_snake[3])/2)
+
+        if ((self.x_milieu_pos == self.x_milieu_pos_snake) and (self.y_milieu_pos == self.y_milieu_pos_snake)):
+            self.canvas.create_text(250, 250, text='touche')
+            self.canvas_width = self.canvas.winfo_width()
+            self.canvas_height=self.canvas.winfo_height()
+            self.x=random.randint(0, self.canvas_width)
+            self.y=random.randint(0, self.canvas_height)
+            self.r = 5
+            self.id = canvas.create_oval(self.x-self.r, self.y-self.r, self.x+self.r, self.y+self.r, fill='purple')
             
         
-            
 tk = Tk()
 tk.title("Miky's snake")
 tk.resizable(0, 0)
