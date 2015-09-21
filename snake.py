@@ -57,11 +57,11 @@ class Food:
     def __init__(self, canvas, snake,  couleur):
         self.canvas = canvas
         self.snake = snake
-        self.canvas_width = self.canvas.winfo_width()
-        self.canvas_height=self.canvas.winfo_height()
+        self.r = 5
+        self.canvas_width = self.canvas.winfo_width() + self.r
+        self.canvas_height=self.canvas.winfo_height() + self.r
         self.x=random.randint(0, self.canvas_width)
         self.y=random.randint(0, self.canvas_height)
-        self.r = 5
         self.id = canvas.create_oval(self.x-self.r, self.y-self.r, self.x+self.r, self.y+self.r, fill=couleur)
 
     def drawing_food(self):
