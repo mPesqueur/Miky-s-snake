@@ -4,83 +4,86 @@ import time
 
 
 class Snake:
-    def __init__(self, canvas, couleur):
+    def __init__(self, canvas):
         self.canvas = canvas
-        self.id = canvas.create_rectangle(10, 10, 20, 20, fill=couleur)
-        self.canvas.move(self.id, 250, 250)
-        self.x=0
-        self.y=0
+        self.r = 10
+        self.canvas_width = self.canvas.winfo_width()
+        self.canvas_height=self.canvas.winfo_height()
+        self.x=random.randint(0, self.canvas_width)
+        self.y=random.randint(0, self.canvas_height)
+        self.id = canvas.create_rectangle(10, 10, 20, 20, fill='green')
+        self.canvas.move(self.id, self.x, self.y)
+        self.vit_x=0
+        self.vit_y=0
         self.canvas.bind_all('<KeyPress-Right>', self.right_move)
         self.canvas.bind_all('<KeyPress-Left>', self.left_move)
         self.canvas.bind_all('<KeyPress-Up>', self.up_move)
         self.canvas.bind_all('<KeyPress-Down>', self.down_move)
-        self.canvas_width = self.canvas.winfo_width()
-        self.canvas_height=self.canvas.winfo_height()
         
 
     def right_move(self, evt):
-        self.x = 0.5
-        self.y = 0
+        self.vit_x = 2
+        self.vit_y = 0
 
     def left_move(self, evt):
-        self.x = -0.5
-        self.y = 0
+        self.vit_x = -2
+        self.vit_y = 0
 
     def up_move(self, evt):
-        self.y = -0.5
-        self.x = 0
+        self.vit_y = -2
+        self.vit_x = 0
 
     def down_move(self, evt):
-        self.y = 0.5
-        self.x = 0
+        self.vit_y = 2
+        self.vit_x = 0
         
     def drawing_snake(self):
-        self.canvas.move(self.id, self.x, self.y)
+        self.canvas.move(self.id, self.vit_x, self.vit_y)
         pos = self.canvas.coords(self.id)
-
-        ##Bordures solides
         if pos[0] <=0:
-            self.x=0
-            self.canvas.create_text(250, 250, text='GAME OVER')##en attente d'un vrai endgame##
+            self.vit_x=0
         if pos[2]>= self.canvas_width:
-            self.x=0
-            self.canvas.create_text(250, 250, text='GAME OVER')##en attente d'un vrai endgame##
+            self.vit_x=0
         if pos[1]<=0:
-            self.y=0
-            self.canvas.create_text(250, 250, text='GAME OVER')##en attente d'un vrai endgame##
+            self.vit_y=0
         if pos[3]>= self.canvas_height:
-            self.y=0
-            self.canvas.create_text(250, 250, text='GAME OVER')##en attente d'un vrai endgame##
-
-
+            self.vit_y=0
+        
 class Food:
-    def __init__(self, canvas, snake,  couleur):
+    def __init__(self, canvas, snake):
         self.canvas = canvas
         self.snake = snake
         self.r = 5
-        self.canvas_width = self.canvas.winfo_width() + self.r
-        self.canvas_height=self.canvas.winfo_height() + self.r
+        self.canvas_width = self.canvas.winfo_width()
+        self.canvas_height=self.canvas.winfo_height()
         self.x=random.randint(0, self.canvas_width)
         self.y=random.randint(0, self.canvas_height)
-        self.id = canvas.create_oval(self.x-self.r, self.y-self.r, self.x+self.r, self.y+self.r, fill=couleur)
+        self.id = canvas.create_oval(self.x-self.r, self.y-self.r, self.x+self.r, self.y+self.r, fill='purple')
+        self.vit_x=1
+        self.vit_y=-1
 
     def drawing_food(self):
-        self.canvas.move(self.id, 0, 0)
+        self.canvas.move(self.id, self.vit_x, self.vit_y)
         pos = self.canvas.coords(self.id)
+        if pos[1] <=0:
+            self.vit_y = 1
+        if pos[3] >= self.canvas_height:
+            self.vit_y = -1
+        if pos[0] <=0:
+            self.vit_x = 1
+        if pos[2] >= self.canvas_width:
+            self.vit_x = -1
 
         
     def eat_food(self):
         pos = self.canvas.coords( self.id )
         pos_snake = self.canvas.coords(self.snake.id)
-
         if (( abs(pos[0] - pos_snake[0]) <= 5  and abs(pos[1] - pos_snake[1] ) <= 5)):
-            #self.canvas.create_text(250, 250, text='touche')
+            self.r = 5
             self.x=random.randint(0, self.canvas_width)
             self.y=random.randint(0, self.canvas_height)
-            self.r = 5
             self.canvas.delete(self.id)
             self.id = canvas.create_oval(self.x-self.r, self.y-self.r, self.x+self.r, self.y+self.r, fill='purple')
-
 
 
 class Score:
@@ -110,8 +113,8 @@ canvas.pack()
 tk.update()
 
 
-snake = Snake(canvas,'red')
-food = Food(canvas, snake,  'purple')
+snake = Snake(canvas)
+food = Food(canvas, snake)
 score = Score(canvas, snake, food)
 
 
