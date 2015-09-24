@@ -73,6 +73,7 @@ class Food:
             self.vit_x = 1
         if pos[2] >= self.canvas_width:
             self.vit_x = -1
+        
 
         
     def eat_food(self):
@@ -103,6 +104,21 @@ class Score:
             self.score =self.score + 1
             self.id=self.canvas.create_text(40, 20, text='Your score: %s' % self.score)
 
+class Food_manager:
+    def __init__(self, canvas, food):
+        self.canvas = canvas
+        self.food = food
+        self.list_food = []
+        
+    def boucle_food(self):
+        for i in range(0, 11):
+            self.list_food.append(self.food.id)
+
+    def afficher(self):
+        for f in self.list_food:
+            f.afficher()
+            
+            
 
 tk = Tk()
 tk.title("Miky's snake")
@@ -116,6 +132,7 @@ tk.update()
 snake = Snake(canvas)
 food = Food(canvas, snake)
 score = Score(canvas, snake, food)
+food_manager = Food_manager(canvas, food)
 
 
 while 1:
@@ -123,7 +140,7 @@ while 1:
     food.drawing_food()
     score.score_update()
     food.eat_food()
-    
+    food_manager.afficher()
     tk.update_idletasks()
     tk.update()
     time.sleep(0.01)
