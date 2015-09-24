@@ -115,7 +115,11 @@ class Food_manager:
             self.list_food.append(Food(self.canvas, self.snake))
             tk.update()
 
+    def drawing_food(self):
+        pass
 
+    def eat_food(self):
+        pass
             
             
 
@@ -139,6 +143,8 @@ while 1:
     food.drawing_food()
     score.score_update()
     food.eat_food()
+    food_manager.drawing_food()
+    food_manager.eat_food()
 
     tk.update_idletasks()
     tk.update()
