@@ -105,18 +105,17 @@ class Score:
             self.id=self.canvas.create_text(40, 20, text='Your score: %s' % self.score)
 
 class Food_manager:
-    def __init__(self, canvas, food):
+    def __init__(self, canvas, snake):
         self.canvas = canvas
-        self.food = food
+        self.snake = snake
         self.list_food = []
         
     def boucle_food(self):
         for i in range(0, 11):
-            self.list_food.append(self.food.id)
+            self.list_food.append(Food(self.canvas, self.snake))
+            tk.update()
 
-    def afficher(self):
-        for f in self.list_food:
-            f.afficher()
+
             
             
 
@@ -128,11 +127,11 @@ canvas = Canvas(tk, width=500, height=500, bd=0, highlightthickness=0)
 canvas.pack()
 tk.update()
 
-
 snake = Snake(canvas)
 food = Food(canvas, snake)
 score = Score(canvas, snake, food)
-food_manager = Food_manager(canvas, food)
+food_manager = Food_manager(canvas, snake)
+food_manager.boucle_food()
 
 
 while 1:
@@ -140,7 +139,7 @@ while 1:
     food.drawing_food()
     score.score_update()
     food.eat_food()
-    food_manager.afficher()
+
     tk.update_idletasks()
     tk.update()
     time.sleep(0.01)
